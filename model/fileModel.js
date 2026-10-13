@@ -64,11 +64,11 @@ export async function actualizarArchivo(
 }
 
 export async function eliminarArchivo(folderId) {
-    const deletfile = await prisma.file.delete({
+    const deletefile = await prisma.file.delete({
         where: {
             id: folderId,
         },
     });
 
-    return deletfile;
+    return deletefile;
 }
