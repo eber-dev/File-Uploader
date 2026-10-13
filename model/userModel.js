@@ -28,7 +28,7 @@ export async function agregarUsuario(email, name, password) {
     return newUser;
 }
 
-export async function actualizarUsuario(id, name, email) {
+export async function actualizarUsuario(id, name, email, password) {
     const updateUser = await prisma.user.update({
         where: {
             id: id,
@@ -36,6 +36,7 @@ export async function actualizarUsuario(id, name, email) {
         data: {
             name: name,
             email: email,
+            password: password,
         },
     });
 
