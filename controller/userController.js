@@ -10,7 +10,7 @@ export async function getUsers(req, res) {
     try {
         await obtenerUsuarios();
     } catch (error) {
-        console.error('Error deleteUser:', error);
+        console.error('Error getUsers:', error);
         res.status(500).send('Error al obtener los usuarios');
     }
 }
@@ -20,7 +20,7 @@ export async function getUsersforId(req, res) {
     try {
         await obtenerUsuarioid(id);
     } catch (error) {
-        console.error('Error deleteUser:', error);
+        console.error('Error getUsersforId:', error);
         res.status(500).send('Error al obtener el usuario');
     }
 }
