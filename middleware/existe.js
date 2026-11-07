@@ -1,69 +1,48 @@
 import { obtenerArchivosid } from '../model/fileModel.js';
-import { obtenerCarpetasid } from '../model/folderModel.js';
 import { obtenerUsuarioid } from '../model/userModel.js';
 
-export async function verificarExistenciaUser() {
+export function verificarExistenciaUser() {
     return async (req, res, next) => {
-        const { id } = req.params;
-        const { nombre } = req.body;
+        const id = Number(req.params.id);
+
+        if (!Number.isInteger(id)) {
+            return res.status(400).send('ID inválido');
+        }
 
         try {
-            const resultado = obtenerUsuarioid(id);
+            const usuario = await obtenerUsuarioid(id);
 
-            if (!resultado) {
-                return res.status(404).send(`${nombre} no encontrado`);
+            if (!usuario) {
+                return res.status(404).send('Usuario no encontrado');
             }
 
-            req.recurso = resultado;
-
-            next();
-        } catch (error) {
-            console.error(`Error al obtener ${nombre}:`, error);
-            return res.status(500).send(`Error al obtener ${nombre}`);
+            req.recurso = usuario;
+            return next();
+        } catch {
+            return res.status(500).send('Error al verificar el usuario');
         }
     };
 }
 
-export async function verificarExistenciaFolder() {
+export function verificarExistenciaFile() {
     return async (req, res, next) => {
-        const { id } = req.params;
-        const { nombre } = req.body;
+        const id = Number(req.params.id);
 
-        try {
-            const resultado = obtenerCarpetasid(id);
-
-            if (!resultado) {
-                return res.status(404).send(`${nombre} no encontrado`);
-            }
-
-            req.recurso = resultado;
-
-            next();
-        } catch (error) {
-            console.error(`Error al obtener ${nombre}:`, error);
-            return res.status(500).send(`Error al obtener ${nombre}`);
+        if (!Number.isInteger(id)) {
+            return res.status(400).send('ID inválido');
         }
-    };
-}
-
-export async function verificarExistenciaFiles() {
-    return async (req, res, next) => {
-        const { id } = req.params;
-        const { nombre } = req.body;
 
         try {
-            const resultado = obtenerArchivosid(id);
+            const archivo = await obtenerArchivosid(id);
 
-            if (!resultado) {
-                return res.status(404).send(`${nombre} no encontrado`);
+            if (!archivo) {
+                return res.status(404).send('Archivo no encontrado');
             }
 
-            req.recurso = resultado;
-
-            next();
-        } catch (error) {
-            console.error(`Error al obtener ${nombre}:`, error);
-            return res.status(500).send(`Error al obtener ${nombre}`);
+            req.recurso = archivo;
+            return next();
+        } catch {
+            return res.status(500).send('Error al verificar el archivo');
         }
     };
 }
