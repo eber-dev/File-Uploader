@@ -3,17 +3,33 @@
 
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
+// ============================================================
+// GENERADOR DEL CLIENTE
+// ============================================================
+// Prisma genera un cliente JavaScript a partir de este schema.
+// Ese cliente se importa en lib/prisma.js y se usa en model/*.js.
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
+// ============================================================
+// CONEXIÓN A LA BASE DE DATOS
+// ============================================================
+// La URL real se toma de DATABASE_URL (definida en .env).
+// Prisma 7 usa un adaptador (PrismaPg) para conectarse a PostgreSQL.
 datasource db {
   provider = "postgresql"
 }
 
+// ============================================================
+// MODELO User (tabla "User")
+// ============================================================
+// Un usuario puede tener muchas carpetas y muchos archivos.
+// username y email son únicos: no puede haber dos iguales.
 model User {
   id        Int      @id @default(autoincrement())
+  username  String   @unique
   email     String   @unique
   name      String?
   password  String
@@ -21,6 +37,12 @@ model User {
   files     File[]
 }
 
+// ============================================================
+// MODELO Folder (tabla "Folder")
+// ============================================================
+// Una carpeta pertenece a un solo usuario (ownerId).
+// Si se borra el usuario, sus carpetas se borran en cascada.
+// Una carpeta puede contener muchos archivos.
 model Folder {
   id        Int      @id @default(autoincrement())
   name      String
@@ -32,6 +54,12 @@ model Folder {
   files     File[]
 }
 
+// ============================================================
+// MODELO File (tabla "File")
+// ============================================================
+// Cada archivo pertenece a un usuario (ownerId).
+// folderId es opcional: null significa que está en la raíz.
+// Si se borra la carpeta, onDelete: SetNull deja el archivo en la raíz.
 model File {
   id           Int      @id @default(autoincrement())
   name         String
@@ -45,4 +73,18 @@ model File {
 
   folderId     Int?
   folder       Folder?  @relation(fields: [folderId], references: [id], onDelete: SetNull)
+}
+
+// ============================================================
+// MODELO Session (tabla "sessions")
+// ============================================================
+// @quixo3/prisma-session-store guarda aquí las sesiones de Express.
+// @@map("sessions") hace que la tabla se llame "sessions" en PostgreSQL.
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+
+  @@map("sessions")
 }

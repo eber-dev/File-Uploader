@@ -3,6 +3,10 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
+console.log(
+    "⚙️ [PRISMA CONFIG] Cargando configuración de la CLI de Prisma (solo se usa con comandos prisma)...",
+);
+
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
