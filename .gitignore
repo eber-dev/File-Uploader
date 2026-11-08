@@ -1,5 +1,6 @@
 /node_modules
 /generated/prisma
+/uploads
 /.agents
 /.claude
 /.windsurf
